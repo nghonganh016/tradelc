@@ -33,7 +33,7 @@ export default function LcDetailPage({ id }) {
   ]
 
   return (
-    <>
+    <div className="split even">
       <section className="card">
         <a href="#/">← Quay lại danh sách</a>
         <div className="row" style={{ marginTop: 10 }}>
@@ -67,6 +67,6 @@ export default function LcDetailPage({ id }) {
           </table></div>
         )}
       </section>
-    </>
+    </div>
   )
 }

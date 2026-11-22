@@ -153,3 +153,61 @@ select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23121314' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 18px center;
 }
+
+/* ===== Bố cục gọn cho màn hình máy tính: mỗi trang vai trò vừa một màn hình, không phải cuộn ===== */
+.container { max-width: 1400px; padding: 20px 64px 28px; }
+header { margin-bottom: 12px; }
+h1 { font-size: 1.35rem; }
+h2 { margin: 0 0 10px; font-size: 1.05rem; }
+.card { padding: 14px 0; }
+.card.wallet { padding: 12px 18px; margin: 8px 0; border-radius: 20px; }
+.note { margin: 0; }
+
+/* Số dư nằm giữa thẻ ví */
+.bal { text-align: right; margin-left: auto; margin-right: 16px; }
+.bal span { display: block; font-size: 0.75rem; color: var(--muted); }
+.bal strong { font-size: 1.35rem; letter-spacing: -0.01em; }
+
+/* Lưới 2 cột: form / thao tác bên trái, bảng bên phải. Màn hình hẹp thì xếp dọc. */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+@media (max-width: 1000px) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+/* Form thu gọn */
+label { margin: 8px 0 4px; font-size: 0.8rem; }
+input, textarea, select { padding: 9px 12px; }
+form > button, .actions { margin-top: 12px; }
+.status { padding: 8px 12px; margin: 10px 0 0; font-size: 0.85rem; }
+
+/* Bảng dài thì cuộn trong khung, không kéo cả trang xuống */
+.table-wrap { max-height: calc(100vh - 300px); overflow: auto; }
+th { position: sticky; top: 0; background: #fff; }
+th, td { padding: 8px 8px 8px 0; }
+.lc-card { padding: 12px 14px; margin-top: 8px; max-height: calc(100vh - 300px); overflow: auto; }
+.tabs { margin: 0 0 4px; }
+.tabs button { padding: 6px 14px; }
+
+/* Thanh tiêu đề tên website */
+.topbar { background: #121314; color: #fff; }
+.topbar-inner { max-width: 1400px; margin: 0 auto; padding: 0 64px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.topbar-brand { display: flex; align-items: center; gap: 12px; }
+.topbar-name { font-size: 1.2rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; }
+.topbar-sub { font-size: 0.75rem; color: #b5b8bd; }
+.topbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
+.topbar-pill { background: #2a2c2e; color: #e6e6e6; border-radius: 999px; padding: 5px 14px; font-size: 0.8rem; font-weight: 500; }
+@media (max-width: 800px) {
+  .container { padding: 16px; }
+  .topbar-inner { padding: 0 16px; }
+  .topbar-sub, .topbar-right { display: none; }
+}
+
+/* ===== Nền xám, mỗi khu vực là một hộp trắng nổi lên ===== */
+body { background: #eceef1; }
+.container { display: grid; gap: 16px; }
+.card { background: #fff; border: 1px solid #e1e3e7; border-radius: 20px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
+.card.wallet { background: #fff; border: 1px solid #e1e3e7; border-radius: 20px; margin: 0; padding: 14px 22px; }
+.avatar::after { border-color: #fff; }
+.card.wallet button.secondary { background: var(--panel); border: 0; }
+.card.wallet button.secondary:hover:not(:disabled) { background: var(--panel-hover); }
+
+/* Số dư nằm trong hộp xám riêng, tách khỏi thẻ ví */
+.bal { background: var(--panel); border-radius: 14px; padding: 8px 18px; min-width: 180px; }

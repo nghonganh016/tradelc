@@ -35,7 +35,7 @@ export default function IssuingBankPage() {
   const parties = [['importer', 'Importer'], ['exporter', 'Exporter']]
 
   return (
-    <>
+    <div className="split even">
       <section className="card">
         <h2>L/C chờ duyệt</h2>
         <TxStatus tx={tx} />
@@ -48,6 +48,6 @@ export default function IssuingBankPage() {
         <h2>L/C khác của ngân hàng</h2>
         <LcTable rows={others} parties={parties} empty="Chưa có L/C nào." />
       </section>
-    </>
+    </div>
   )
 }

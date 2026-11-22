@@ -4,7 +4,6 @@ import { useAccount } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import WalletCard from './components/WalletCard'
 import { useRoles } from './hooks/useRoles'
-import { formatAmount } from './utils'
 import ImporterPage from './pages/ImporterPage'
 import IssuingBankPage from './pages/IssuingBankPage'
 import ExporterPage from './pages/ExporterPage'
@@ -35,48 +34,54 @@ export default function App() {
   const Page = activeKey && PAGES[activeKey]
 
   return (
-    <div className="container">
-      <header>
-        <h1>TradeLC – Thư tín dụng trên blockchain</h1>
-        <span className="badge green">Thanh toán bằng mUSD</span>
-      </header>
-
-      <WalletCard roles={roles} rolesLoading={isLoading} />
-
-      {ready && (
-        <>
-          <section className="card">
-            <h2>Tài khoản của tôi</h2>
-            <div className="balance">
-              <strong>{formatAmount(balance)}</strong>
-              <span>Số dư token thanh toán</span>
+    <>
+      {/* Thanh tiêu đề tên website, nền tối kéo hết chiều ngang (giống Etherscan / Pinata) */}
+      <div className="topbar">
+        <div className="topbar-inner">
+          <div className="topbar-brand">
+            <div>
+              <div className="topbar-name">TradeLC</div>
+              <div className="topbar-sub">Thư tín dụng trên blockchain</div>
             </div>
+          </div>
+          <div className="topbar-right">
+            <span className="topbar-pill">Ethereum Sepolia</span>
+            <span className="topbar-pill">Thanh toán bằng mUSD</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="container">
+        <WalletCard roles={roles} rolesLoading={isLoading} balance={balance} />
+
+        {ready && (
+          <>
             {!isLoading && roles.length === 0 && (
               <p className="status error">
                 Ví này chưa được cấp vai trò nào trong contract LetterOfCredit.
                 Hãy nhờ admin gọi <code>grantRole</code> cho địa chỉ của bạn.
               </p>
             )}
-          </section>
 
-          {lcId !== null && <LcDetailPage id={lcId} />}
+            {lcId !== null && <LcDetailPage id={lcId} />}
 
-          {/* Chỉ hiện tab khi ví có từ 2 vai trò trở lên */}
-          {lcId === null && roles.length > 1 && (
-            <nav className="tabs">
-              {roles.map((r) => (
-                <button key={r.key} className={r.key === activeKey ? 'active' : ''} onClick={() => setTab(r.key)}>
-                  {r.label}
-                </button>
-              ))}
-            </nav>
-          )}
+            {/* Chỉ hiện tab khi ví có từ 2 vai trò trở lên */}
+            {lcId === null && roles.length > 1 && (
+              <nav className="tabs">
+                {roles.map((r) => (
+                  <button key={r.key} className={r.key === activeKey ? 'active' : ''} onClick={() => setTab(r.key)}>
+                    {r.label}
+                  </button>
+                ))}
+              </nav>
+            )}
 
-          {lcId === null && Page && <Page />}
-        </>
-      )}
+            {lcId === null && Page && <Page />}
+          </>
+        )}
 
-      <p className="note">Chỉ dùng cho mạng thử nghiệm Sepolia. Không dùng ví chứa tiền thật.</p>
-    </div>
+        <p className="note">Chỉ dùng cho mạng thử nghiệm Sepolia. Không dùng ví chứa tiền thật.</p>
+      </div>
+    </>
   )
 }

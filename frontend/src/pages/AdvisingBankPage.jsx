@@ -122,7 +122,7 @@ export default function AdvisingBankPage() {
   const todo = mine.filter((lc) => [S.DocsPresented, S.DocsAccepted].includes(lc.state))
 
   return (
-    <>
+    <div className="split">
       <section className="card">
         <h2>L/C cần xử lý</h2>
         <TxStatus tx={tx} />
@@ -135,6 +135,6 @@ export default function AdvisingBankPage() {
         <h2>Tất cả L/C của ngân hàng</h2>
         <LcTable rows={mine} parties={[['importer', 'Importer'], ['exporter', 'Exporter']]} />
       </section>
-    </>
+    </div>
   )
 }

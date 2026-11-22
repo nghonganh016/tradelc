@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import { LC_ADDRESS, ETHERSCAN } from '../config'
-import { shortAddr, avatarColor } from '../utils'
+import { shortAddr, avatarColor, formatAmount } from '../utils'
 
-export default function WalletCard({ roles, rolesLoading }) {
+export default function WalletCard({ roles, rolesLoading, balance }) {
   const { address, isConnected, chainId } = useAccount()
   const { connect, connectors, isPending, error } = useConnect()
   const { disconnect } = useDisconnect()
@@ -47,6 +47,10 @@ export default function WalletCard({ roles, rolesLoading }) {
             </div>
           </div>
         </div>
+        {/* Số dư mUSD: đọc từ MockUSD.balanceOf (xem hooks/useRoles.js) */}
+        {isConnected && !wrongNetwork && (
+          <div className="bal"><span>Số dư</span><strong>{formatAmount(balance)}</strong></div>
+        )}
         {isConnected ? (
           <button className="secondary" onClick={() => disconnect()}>Ngắt kết nối</button>
         ) : (

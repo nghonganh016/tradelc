@@ -55,7 +55,7 @@ export default function ExporterPage() {
 
   const step1Ready = selected && file && docHash
   return (
-    <>
+    <div className="split">
       <section className="card">
         <h2>Nộp chứng từ</h2>
         <label>Chọn L/C (đã ký quỹ hoặc cần nộp lại)</label>
@@ -96,6 +96,6 @@ export default function ExporterPage() {
           <LcTable rows={mine} parties={[['importer', 'Importer']]} empty="Chưa có L/C nào gửi cho bạn." />
         )}
       </section>
-    </>
+    </div>
   )
 }
