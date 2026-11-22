@@ -24,18 +24,37 @@ const DESCRIBE = {
 // AccessControl: tham số đầu của chúng là mã vai trò, trùng số 0 với L/C #0 nên sẽ lẫn vào kết quả.
 const EVENTS = lcAbi.filter((x) => x.type === 'event' && x.name in DESCRIBE)
 
+// Gọi eth_getLogs. RPC công khai thường giới hạn khoảng block mỗi lần (vd thirdweb: 1000 block).
+// Thử đọc một lần cả khoảng DEPLOY_BLOCK -> mới nhất; nếu RPC từ chối vì quá rộng thì
+// chia thành các cửa sổ nhỏ theo giới hạn mà RPC báo, mỗi lượt gọi song song 5 cửa sổ.
+async function getLogsInRange(client, filter) {
+  const ask = (from, to) =>
+    client.request({ method: 'eth_getLogs', params: [{ ...filter, fromBlock: toHex(from), toBlock: toHex(to) }] })
+  const latest = await client.getBlockNumber()
+  try {
+    return await ask(DEPLOY_BLOCK, latest)
+  } catch (err) {
+    const text = `${err.details || ''} ${err.message || ''}`
+    if (!/limit|range|exceed|blocks/i.test(text)) throw err // lỗi khác (mất mạng...) thì báo lỗi luôn
+    const size = BigInt(text.match(/blocks? (?:is|of|:)\s*(\d+)/i)?.[1] || 1000) // giới hạn RPC báo, mặc định 1000
+    const windows = []
+    for (let from = DEPLOY_BLOCK; from <= latest; from += size) windows.push([from, from + size - 1n < latest ? from + size - 1n : latest])
+    const logs = []
+    for (let i = 0; i < windows.length; i += 5) {
+      const part = await Promise.all(windows.slice(i, i + 5).map(([f, t]) => ask(f, t)))
+      logs.push(...part.flat())
+    }
+    return logs
+  }
+}
+
 export async function fetchHistory(client, id) {
-  // Một lần eth_getLogs với 2 bộ lọc topic:
+  // Bộ lọc topic:
   //   topics[0] = danh sách chữ ký của 10 event (khớp BẤT KỲ event nào)
   //   topics[1] = id của L/C (tham số indexed đầu tiên), đệm đủ 32 byte
-  const logs = await client.request({
-    method: 'eth_getLogs',
-    params: [{
-      address: LC_ADDRESS,
-      fromBlock: toHex(DEPLOY_BLOCK),
-      toBlock: 'latest',
-      topics: [EVENTS.map((e) => toEventSelector(e)), pad(toHex(BigInt(id)), { size: 32 })],
-    }],
+  const logs = await getLogsInRange(client, {
+    address: LC_ADDRESS,
+    topics: [EVENTS.map((e) => toEventSelector(e)), pad(toHex(BigInt(id)), { size: 32 })],
   })
 
   // Lấy thời gian của từng block (mỗi block chỉ hỏi 1 lần)

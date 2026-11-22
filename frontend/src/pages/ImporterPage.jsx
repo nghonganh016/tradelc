@@ -69,7 +69,9 @@ export default function ImporterPage() {
   }
   const missingRoles = ROLE_CHECKS.filter((_, i) => hasRoleOf(i) === false).map(([, label]) => label)
 
-  const set = (field) => (e) => setForm({ ...form, [field]: e.target.value })
+  // Mỗi lần sửa form thì xóa thông báo lỗi cũ (tránh lỗi của lần bấm Gửi trước còn nằm lại sau khi đã sửa đúng)
+  const update = (patch) => { setForm({ ...form, ...patch }); setFormError('') }
+  const set = (field) => (e) => update({ [field]: e.target.value })
   // termsHash = keccak256 của văn bản điều kiện (chỉ băm trên trình duyệt, văn bản không lên chuỗi)
   const termsHash = form.terms.trim() ? keccak256(toBytes(form.terms.trim())) : ''
 
@@ -147,20 +149,20 @@ export default function ImporterPage() {
           <div className="inline">
             <input type="datetime-local" value={form.expiry} onChange={set('expiry')} style={{ flex: 1, minWidth: 150, width: 'auto' }} />
             {/* Nút đặt hạn nhanh: giờ hiện tại + 8 phút (để thử hết hạn) hoặc + 7 ngày */}
-            <button type="button" className="sm secondary" onClick={() => setForm({ ...form, expiry: localInput(8) })}>+8 phút</button>
-            <button type="button" className="sm secondary" onClick={() => setForm({ ...form, expiry: localInput(7 * 24 * 60) })}>+7 ngày</button>
+            <button type="button" className="sm secondary" onClick={() => update({ expiry: localInput(8) })}>+8 phút</button>
+            <button type="button" className="sm secondary" onClick={() => update({ expiry: localInput(7 * 24 * 60) })}>+7 ngày</button>
           </div>
 
           <div className="inline" style={{ justifyContent: 'space-between', margin: '8px 0 4px' }}>
             <label style={{ margin: 0 }}>Nội dung điều kiện L/C</label>
-            <button type="button" className="sm secondary" onClick={() => setForm({ ...form, terms: SAMPLE_TERMS })}>Điền mẫu</button>
+            <button type="button" className="sm secondary" onClick={() => update({ terms: SAMPLE_TERMS })}>Điền mẫu</button>
           </div>
           <textarea rows={2} value={form.terms} onChange={set('terms')} placeholder="Ví dụ: Giao 500 tấn gạo, cảng Hải Phòng, chậm nhất 30/12…" />
           {termsHash && <div className="muted">termsHash = {termsHash}</div>}
           {formError && <p className="status error">{formError}</p>}
           {missingRoles.length > 0 && (
             <p className="status error">
-              ⚠ Chưa có role: {missingRoles.join(', ')}. Vẫn gửi được, nhưng contract sẽ từ chối giao dịch cho đến khi admin cấp role.
+              <span className="ico warn">!</span>Chưa có role: {missingRoles.join(', ')}. Vẫn gửi được, nhưng contract sẽ từ chối giao dịch cho đến khi admin cấp role.
             </p>
           )}
           <button type="submit" disabled={busy}>Gửi yêu cầu</button>

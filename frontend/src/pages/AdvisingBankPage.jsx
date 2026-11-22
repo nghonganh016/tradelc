@@ -76,7 +76,7 @@ function LcCard({ lc, run, busy }) {
         <p>
           📎 <a href={shown.url} target="_blank" rel="noreferrer">{shown.fileName}</a>{' '}
           <span className="muted">(CID {shown.cid})</span>
-          {!entry && <span className="error"> ⚠ File backend lưu không khớp hash on-chain, hãy kiểm tra kỹ.</span>}
+          {!entry && <span className="error"> <span className="ico warn">!</span>File backend lưu không khớp hash on-chain, hãy kiểm tra kỹ.</span>}
         </p>
       )}
 
@@ -90,7 +90,9 @@ function LcCard({ lc, run, busy }) {
       {check?.error && <p className="status error">{check.error}</p>}
       {check && !check.error && (
         <p className={`status ${check.ok ? 'ok' : 'error'}`}>
-          {check.ok ? '✅ Toàn vẹn: hash của file khớp docHash on-chain.' : '❌ KHÔNG khớp: file đã bị thay đổi hoặc là file khác.'}
+          {check.ok
+            ? <><span className="ico ok">✓</span>Toàn vẹn: hash của file khớp docHash on-chain.</>
+            : <><span className="ico bad">✕</span>KHÔNG khớp: file đã bị thay đổi hoặc là file khác.</>}
           <br /><span className="mono">hash file: {check.hash}</span>
         </p>
       )}

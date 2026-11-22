@@ -211,3 +211,18 @@ body { background: #eceef1; }
 
 /* Số dư nằm trong hộp xám riêng, tách khỏi thẻ ví */
 .bal { background: var(--panel); border-radius: 14px; padding: 8px 18px; min-width: 180px; }
+
+/* Icon trạng thái: vòng tròn đơn sắc thay cho emoji */
+.ico { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; margin-right: 8px; font-size: 11px; font-weight: 700; line-height: 1; vertical-align: -3px; color: #fff; }
+.ico.ok { background: var(--green); }
+.ico.bad { background: var(--red); }
+.ico.warn { background: #c27803; }
+.ico.wait { background: var(--muted); }
+
+/* Nút thao tác trong bảng: không xuống dòng chữ, xếp dọc và cùng độ rộng */
+td .inline { flex-direction: column; align-items: stretch; gap: 6px; min-width: 150px; }
+td button.sm { white-space: nowrap; padding: 8px 20px; }
+
+/* Nút phụ trong thẻ L/C (nền xám): đổi sang nền trắng có viền để không chìm vào nền */
+.lc-card button.secondary { background: #fff; border: 1px solid #d9dbe0; }
+.lc-card button.secondary:hover:not(:disabled) { background: var(--panel-hover); }

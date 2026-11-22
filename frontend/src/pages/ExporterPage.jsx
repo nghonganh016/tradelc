@@ -86,7 +86,7 @@ export default function ExporterPage() {
             <a href={up.url} target="_blank" rel="noreferrer">Mở file</a>
           </p>
         )}
-        {up.state === 'error' && <p className="status error">❌ Upload thất bại: {up.error}</p>}
+        {up.state === 'error' && <p className="status error"><span className="ico bad">✕</span>Upload thất bại: {up.error}</p>}
         <TxStatus tx={tx} />
       </section>
 

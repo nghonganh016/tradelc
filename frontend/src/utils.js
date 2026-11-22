@@ -1,5 +1,6 @@
 // Các hàm định dạng hiển thị dùng chung
-import { formatUnits, BaseError, ContractFunctionRevertedError, UserRejectedRequestError } from 'viem'
+import { formatUnits, decodeErrorResult, BaseError, ContractFunctionRevertedError, UserRejectedRequestError } from 'viem'
+import tokenAbi from './abi/MockUSD.json'
 import { TOKEN_DECIMALS, TOKEN_SYMBOL } from './config'
 
 // 0x1234...abcd
@@ -50,7 +51,20 @@ export function translateError(err) {
   if (err instanceof BaseError) {
     const rev = err.walk((e) => e instanceof ContractFunctionRevertedError)
     if (rev instanceof ContractFunctionRevertedError) {
-      const key = rev.reason || rev.data?.errorName
+      let key = rev.reason || rev.data?.errorName
+      let args = rev.data?.args
+      // Lỗi ERC20 (số dư/allowance) do contract MockUSD ném ra rồi được chuyển ngược lên, nên ABI của
+      // LetterOfCredit không biết tên lỗi này. Giải mã lại bằng ABI của token từ dữ liệu lỗi thô (rev.raw).
+      if (!key && rev.raw) {
+        try { ({ errorName: key, args } = decodeErrorResult({ abi: tokenAbi, data: rev.raw })) } catch { /* không giải mã được */ }
+      }
+      // Hai lỗi này có kèm số liệu nên nêu rõ con số: args = [địa chỉ, số đang có, số cần]
+      if (key === 'ERC20InsufficientBalance') {
+        return `Số dư mUSD không đủ: bạn có ${formatAmount(args[1])}, cần ${formatAmount(args[2])}.`
+      }
+      if (key === 'ERC20InsufficientAllowance') {
+        return `Chưa approve đủ mUSD cho contract: đã approve ${formatAmount(args[1])}, cần ${formatAmount(args[2])}.`
+      }
       return REVERTS[key] || `Contract từ chối giao dịch: ${key || 'không rõ lý do'}`
     }
     return err.shortMessage || err.message
