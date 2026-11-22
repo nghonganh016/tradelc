@@ -39,14 +39,7 @@ contract LetterOfCreditTest is Test {
 
     function _request() internal returns (uint256 id) {
         vm.prank(importer);
-        id = lc.requestLC(
-            exporter,
-            issuingBank,
-            advisingBank,
-            AMOUNT,
-            block.timestamp + DURATION,
-            keccak256("terms")
-        );
+        id = lc.requestLC(exporter, issuingBank, advisingBank, AMOUNT, block.timestamp + DURATION, keccak256("terms"));
     }
 
     function _requestAndApprove() internal returns (uint256 id) {
@@ -85,8 +78,8 @@ contract LetterOfCreditTest is Test {
     function test_RevertWhen_NonBankApproves() public {
         uint256 id = _request();
 
-        vm.prank(importer);         // người KHÔNG có quyền
-        vm.expectRevert();          // mong đợi lệnh kế tiếp thất bại
+        vm.prank(importer); // người KHÔNG có quyền
+        vm.expectRevert(); // mong đợi lệnh kế tiếp thất bại
         lc.approveLC(id);
 
         assertEq(uint256(_state(id)), uint256(LetterOfCredit.State.Requested));
@@ -103,7 +96,7 @@ contract LetterOfCreditTest is Test {
 
         assertEq(uint256(_state(id)), uint256(LetterOfCredit.State.DocsRejected));
         assertEq(usd.balanceOf(address(lc)), AMOUNT);
-    } 
+    }
 
     function test_ExpireLC_RefundsImporter() public {
         uint256 id = _toDeposited();
@@ -144,8 +137,8 @@ contract LetterOfCreditTest is Test {
         uint256 id = _requestAndApprove();
 
         vm.startPrank(importer);
-        usd.approve(address(lc), AMOUNT);           // allowance đủ
-        usd.transfer(makeAddr("someone"), 1e18);    // số dư còn AMOUNT - 1e18
+        usd.approve(address(lc), AMOUNT); // allowance đủ
+        usd.transfer(makeAddr("someone"), 1e18); // số dư còn AMOUNT - 1e18
         vm.expectRevert();
         lc.depositEscrow(id);
         vm.stopPrank();
@@ -173,7 +166,7 @@ contract LetterOfCreditTest is Test {
         address otherBank = makeAddr("otherBank");
 
         vm.startPrank(admin);
-        lc.grantRole(lc.ISSUINGBANK_ROLE(), otherBank);        
+        lc.grantRole(lc.ISSUINGBANK_ROLE(), otherBank);
         vm.stopPrank();
 
         vm.prank(otherBank);

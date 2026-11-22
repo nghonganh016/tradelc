@@ -18,3 +18,7 @@ docs/
 .env
 .env.*
 !.env.example
+
+# Chỉ giữ run-latest.json làm bằng chứng deploy; bỏ các bản sao theo timestamp và file khóa
+/broadcast/**/run-[0-9]*.json
+/broadcast/**/*.recovery.lock

@@ -14,7 +14,19 @@ contract LetterOfCredit is AccessControl {
 
     IERC20 public immutable paymentToken;
 
-    enum State { None, Requested, Approved, Rejected, Deposited, DocsPresented, DocsAccepted, DocsRejected, Paid, Expired, Cancelled }
+    enum State {
+        None,
+        Requested,
+        Approved,
+        Rejected,
+        Deposited,
+        DocsPresented,
+        DocsAccepted,
+        DocsRejected,
+        Paid,
+        Expired,
+        Cancelled
+    }
 
     struct LC {
         address importer;
@@ -49,11 +61,11 @@ contract LetterOfCredit is AccessControl {
     }
 
     function requestLC(
-        address exporter, 
-        address issuingBank, 
+        address exporter,
+        address issuingBank,
         address advisingBank,
-        uint256 amount, 
-        uint256 expiryDate, 
+        uint256 amount,
+        uint256 expiryDate,
         bytes32 termsHash
     ) external onlyRole(IMPORTER_ROLE) returns (uint256 id) {
         require(amount > 0, "Amount must be > 0");
@@ -86,7 +98,7 @@ contract LetterOfCredit is AccessControl {
         require(msg.sender == lc.issuingBank, "Not the issuing bank of this LC");
         require(lc.state == State.Requested, "Wrong state");
         require(block.timestamp < lc.expiryDate, "LC expired");
-        
+
         lc.state = State.Approved;
         emit LCApproved(id, msg.sender);
     }
@@ -166,7 +178,11 @@ contract LetterOfCredit is AccessControl {
     function expireLC(uint256 id) external onlyRole(IMPORTER_ROLE) {
         LC storage lc = lcs[id];
         require(msg.sender == lc.importer, "Not the importer of this LC");
-        require(lc.state == State.Requested || lc.state == State.Approved || lc.state == State.Deposited || lc.state == State.DocsRejected, "Wrong state");
+        require(
+            lc.state == State.Requested || lc.state == State.Approved || lc.state == State.Deposited
+                || lc.state == State.DocsRejected,
+            "Wrong state"
+        );
         require(block.timestamp >= lc.expiryDate, "Not expire yet");
 
         uint256 refundAmount = 0;
