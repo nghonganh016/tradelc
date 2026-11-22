@@ -22,7 +22,7 @@ contract Deploy is Script {
         lc.grantRole(lc.ISSUINGBANK_ROLE(), issuingBank);
         lc.grantRole(lc.ADVISINGBANK_ROLE(), advisingBank);
 
-        usd.mint(importer, 10_000e18);   // 10.000 mUSD cho Importer thử nghiệm
+        usd.mint(importer, 10_000e18); // 10.000 mUSD cho Importer thử nghiệm
 
         vm.stopBroadcast();
 
