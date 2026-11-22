@@ -113,7 +113,7 @@ input, textarea, select {
   width: 100%; padding: 12px 14px; border: 1px solid transparent; border-radius: 12px;
   background: var(--panel); color: var(--ink); font: inherit; font-size: 0.95rem;
 }
-input:focus, textarea:focus, select:focus { outline: none; border-color: var(--ink); background: #fff; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--ink); background-color: #fff; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 form > button, .actions { margin-top: 16px; }
 
@@ -134,7 +134,8 @@ th { color: var(--muted); font-weight: 500; font-size: 0.8rem; }
 
 .sm { }
 textarea { resize: vertical; }
-.card > .muted { margin: 0 0 8px; }
+.card > p.muted { margin: 8px 0; }
+.card.wallet > .muted { margin: 10px 0 0; }
 
 /* Thẻ L/C ở trang Advising Bank */
 .lc-card { background: var(--panel); border-radius: 20px; padding: 16px 18px; margin-top: 12px; }
@@ -145,3 +146,10 @@ textarea { resize: vertical; }
 .file-pick input { width: auto; background: transparent; padding: 0; }
 
 .card table th { width: 140px; }
+
+/* Ô chọn: tự vẽ mũi tên và chừa khoảng cách bên phải */
+select {
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23121314' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 18px center;
+}
